@@ -25,8 +25,10 @@ namespace LeitorXLSX.Repositories
 
             if (xlsxVotos?.Count() > 0)
             {
+                Console.WriteLine("Salvando os dados. Aguarde alguns instantes");
                 await _context.AddRangeAsync(xlsxVotos);
                 await _context.SaveChangesAsync();
+                Console.WriteLine("Dados salvos com sucesso");
             }
 
             return xlsxVotos;
@@ -51,7 +53,7 @@ namespace LeitorXLSX.Repositories
                 Console.WriteLine($"\nForam encontradas {rowCount} linhas no arquivo {nomeArquivo}\nAguarde um momento");
 
                 // Verificar se o processo deve ser completo ou não;
-                int rows = isProcessoCompleto ? rowCount : 10;
+                int rows = isProcessoCompleto ? rowCount : 100;
                 var votos = GerarVotosYield(xlRange: xlRange, rows: rows, desconsiderarAteLinha: desconsiderarAteLinha);
 
                 // Adicionar dados na lista final;
@@ -117,7 +119,9 @@ namespace LeitorXLSX.Repositories
                     QtdTotalFinal = qtdTotalFinal
                 };
 
-                Console.WriteLine($"Linha {(i - desconsiderarAteLinha)}/{rows} adicionada à lista final");
+                int desconsiderar = i - desconsiderarAteLinha;
+                double porcentagemFeita = ((double)desconsiderar / (double)rows) * 100;
+                Console.WriteLine($"Linha {desconsiderar}/{rows} adicionado. [{Math.Round(porcentagemFeita, 2, MidpointRounding.AwayFromZero)}%]");
 
                 yield return v;
             }
