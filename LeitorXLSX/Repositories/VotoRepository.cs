@@ -57,48 +57,34 @@ namespace LeitorXLSX.Repositories
                     continue;
                 }
 
-                string teste = (string)(xlRange.Cells[i, 1]).Value2 ?? "";
-                string teste2 = (string)(xlRange.Cells[i, 2]).Value2 ?? "";
-                //string diretoria = (string)(xlRange.Cells[i, 3]).Value2;
-                //string vereador = (string)(xlRange.Cells[i, 4]).Value2;
-                //string tipoProtocolo = (string)(xlRange.Cells[i, 5]).Value2;
-                //string assunto = (string)(xlRange.Cells[i, 6]).Value2;
-                //string subdivisao = (string)(xlRange.Cells[i, 7]).Value2;
-                //string regional = (string)(xlRange.Cells[i, 8]).Value2;
-                //string numero = xlRange.Cells[i, 9].Value2.ToString(); // Double (?);
-                //string complemento = (string)(xlRange.Cells[i, 10]).Value2;
-                //string cep = (string)(xlRange.Cells[i, 11]).Value2;
-                //string pontoReferencia = (string)(xlRange.Cells[i, 12]).Value2;
-                //string descricao = (string)(xlRange.Cells[i, 13]).Value2;
-                //string dadosImportantes = (string)(xlRange.Cells[i, 14]).Value2;
-                //string status = (string)(xlRange.Cells[i, 15]).Value2;
-                //string tipoDocExterno = (string)(xlRange.Cells[i, 16]).Value2;
-                //string docExterno = (string)(xlRange.Cells[i, 17]).Value2;
-                //string posicionamento = (string)(xlRange.Cells[i, 18]).Value2;
-                //string dtResposta = xlRange.Cells[i, 19].Value2.ToString(); // Double (?)
-                //string resposta = (string)(xlRange.Cells[i, 20]).Value2;
-                //string statusRespostaParcial = (string)(xlRange.Cells[i, 21]).Value2;
-                //string dtRespostaParcial = xlRange.Cells[i, 22].Value2.ToString(); // Double (?)
-                //string respostaParcial = (string)(xlRange.Cells[i, 23]).Value2;
-                //string sigiloso = (string)(xlRange.Cells[i, 24]).Value2;
-                //string usuarioCadastro = (string)(xlRange.Cells[i, 25]).Value2;
-                //string cpf = xlRange.Cells[i, 26].Value2.ToString();
+                string nomeMunicipio = xlRange.Cells[i, 1].Value2 ?? "";
+                string qtdAptosMunicipio = xlRange.Cells[i, 2].Value2 ?? "";
+                string codigoMunicipioIBGE = xlRange.Cells[i, 3].Value2 ?? "";
+                bool isCapital = xlRange.Cells[i, 4].Value2 ?? false;
+                int zona = xlRange.Cells[i, 5].Value2 ?? 0;
+                int secao = xlRange.Cells[i, 6].Value2 ?? 0;
+                int qtdAptos = xlRange.Cells[i, 7].Value2 ?? 0;
+                int qtdVotos13 = xlRange.Cells[i, 8].Value2 ?? 0;
+                int qtdVotos22 = xlRange.Cells[i, 9].Value2 ?? 0;
+                int qtdTotalVotos1322 = xlRange.Cells[i, 10].Value2 ?? 0;
+                int qtdVotosBranco = xlRange.Cells[i, 11].Value2 ?? 0;
+                int qtdTotalFinal = xlRange.Cells[i, 12].Value2 ?? 0;
 
                 Voto v = new()
                 {
                     Turno = 2,
-                    NomeMunicipio = "",
-                    QtdAptosMunicipio = "",
-                    CodigoMunicipioIBGE = "",
-                    IsCapital = false,
-                    Zona = 0,
-                    Secao = 0,
-                    QtdAptos = 0,
-                    QtdVotos13 = 0,
-                    QtdVotos22 = 0,
-                    QtdTotalVotos1322 = 0,
-                    QtdVotosBranco = 0,
-                    QtdTotalFinal = 0
+                    NomeMunicipio = nomeMunicipio,
+                    QtdAptosMunicipio = qtdAptosMunicipio,
+                    CodigoMunicipioIBGE = codigoMunicipioIBGE,
+                    IsCapital = isCapital,
+                    Zona = zona,
+                    Secao = secao,
+                    QtdAptos = qtdAptos,
+                    QtdVotos13 = qtdVotos13,
+                    QtdVotos22 = qtdVotos22,
+                    QtdTotalVotos1322 = qtdTotalVotos1322,
+                    QtdVotosBranco = qtdVotosBranco,
+                    QtdTotalFinal = qtdTotalFinal
                 };
 
                 xlsxVotos.Add(v);
