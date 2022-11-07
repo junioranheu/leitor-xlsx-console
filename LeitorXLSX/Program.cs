@@ -24,7 +24,7 @@ var serviceProvider = new ServiceCollection()
                      .BuildServiceProvider();
 
 bool isContinuar = true;
-bool resetarBd = false;
+bool resetarBd = true;
 if (resetarBd)
 {
     try

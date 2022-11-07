@@ -19,22 +19,17 @@ namespace LeitorXLSX.Repositories
 
         public async Task<List<Voto>>? GetVotosSegundoTurno()
         {
-            string caminhoXLSX = Directory.GetFiles(AppContext.BaseDirectory + $"\\XLSX\\{GetDescricaoEnum(ListaXlsxEnum.SegundoTurno)}\\", "*.xml", SearchOption.TopDirectoryOnly)?.FirstOrDefault();
+            string caminhoXLSX = $"{AppContext.BaseDirectory}\\XLSX\\{GetDescricaoEnum(ListaXlsxEnum.SegundoTurno)}";
 
-            if (caminhoXLSX is not null)
+            List<Voto> xlsxVotos = LerExcelSegundoTurno(caminhoXLSX);
+
+            if (xlsxVotos?.Count > 0)
             {
-                List<Voto> xlsxVotos = LerExcelSegundoTurno(caminhoXLSX);
-
-                if (xlsxVotos?.Count > 0)
-                {
-                    await _context.AddRangeAsync(xlsxVotos);
-                    // await _context.SaveChangesAsync();
-                }
-
-                return xlsxVotos;
+                await _context.AddRangeAsync(xlsxVotos);
+                // await _context.SaveChangesAsync();
             }
 
-            return null;
+            return xlsxVotos;
         }
 
         private static List<Voto> LerExcelSegundoTurno(string caminho)
@@ -62,8 +57,8 @@ namespace LeitorXLSX.Repositories
                     continue;
                 }
 
-                string teste = xlRange?.Cells[i, 1].ToString() ?? "";
-                //string grupo = (string)(xlRange.Cells[i, 2]).Value2;
+                string teste = (string)(xlRange.Cells[i, 1]).Value2 ?? "";
+                string teste2 = (string)(xlRange.Cells[i, 2]).Value2 ?? "";
                 //string diretoria = (string)(xlRange.Cells[i, 3]).Value2;
                 //string vereador = (string)(xlRange.Cells[i, 4]).Value2;
                 //string tipoProtocolo = (string)(xlRange.Cells[i, 5]).Value2;

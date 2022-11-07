@@ -4,10 +4,10 @@ namespace LeitorXLSX.Enums
 {
     public enum ListaXlsxEnum
     {
-        [Description("VOTOS_2T")]
+        [Description("VOTOS_2T.xlsx")]
         SegundoTurno = 1,
 
-        [Description("teste")]
+        [Description("teste.xlsx")]
         Teste = 2
     }
 }
