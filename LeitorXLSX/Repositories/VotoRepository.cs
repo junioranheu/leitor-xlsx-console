@@ -21,18 +21,18 @@ namespace LeitorXLSX.Repositories
         {
             string caminhoXLSX = $"{AppContext.BaseDirectory}\\XLSX\\{GetDescricaoEnum(ListaXlsxEnum.SegundoTurno)}";
 
-            List<Voto> xlsxVotos = LerExcelSegundoTurno(caminhoXLSX);
+            List<Voto> xlsxVotos = LerExcelSegundoTurno(caminho: caminhoXLSX, desconsiderarAteLinha: 2, isProcessoCompleto: true);
 
             if (xlsxVotos?.Count > 0)
             {
                 await _context.AddRangeAsync(xlsxVotos);
-                // await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
 
             return xlsxVotos;
         }
 
-        private static List<Voto> LerExcelSegundoTurno(string caminho)
+        private static List<Voto> LerExcelSegundoTurno(string caminho, int desconsiderarAteLinha, bool isProcessoCompleto)
         {
             // Tutorial de como "ler excel" em C#: https://coderwall.com/p/app3ya/read-excel-file-in-c
             List<Voto> xlsxVotos = new();
@@ -48,31 +48,36 @@ namespace LeitorXLSX.Repositories
             string nomeArquivo = Path.GetFileName(caminho);
             Console.WriteLine("\nForam encontradas " + rowCount + " linhas no arquivo " + nomeArquivo + "\nAguarde um momento");
 
+            // Verificar se o processo deve ser completo ou não;
+            int rows = isProcessoCompleto ? rowCount : 100;
+
             // Loop em todas as linhas;
-            for (int i = 1; i <= rowCount; i++)
+            for (int i = 1; i <= (rows + desconsiderarAteLinha); i++)
             {
-                // Pular o cabeçalho;
-                if (i == 1)
+                // Pular os cabeçalhos;
+                if (i <= desconsiderarAteLinha)
                 {
                     continue;
                 }
 
-                string nomeMunicipio = xlRange.Cells[i, 1].Value2 ?? "";
-                string qtdAptosMunicipio = xlRange.Cells[i, 2].Value2 ?? "";
-                string codigoMunicipioIBGE = xlRange.Cells[i, 3].Value2 ?? "";
-                bool isCapital = xlRange.Cells[i, 4].Value2 ?? false;
-                int zona = xlRange.Cells[i, 5].Value2 ?? 0;
-                int secao = xlRange.Cells[i, 6].Value2 ?? 0;
-                int qtdAptos = xlRange.Cells[i, 7].Value2 ?? 0;
-                int qtdVotos13 = xlRange.Cells[i, 8].Value2 ?? 0;
-                int qtdVotos22 = xlRange.Cells[i, 9].Value2 ?? 0;
-                int qtdTotalVotos1322 = xlRange.Cells[i, 10].Value2 ?? 0;
-                int qtdVotosBranco = xlRange.Cells[i, 11].Value2 ?? 0;
-                int qtdTotalFinal = xlRange.Cells[i, 12].Value2 ?? 0;
+                string UF = xlRange.Cells[i, 1].Value2 ?? "";
+                string nomeMunicipio = xlRange.Cells[i, 2].Value2 ?? "";
+                string qtdAptosMunicipio = xlRange.Cells[i, 3].Value2 ?? "";
+                double codigoMunicipioIBGE = xlRange.Cells[i, 4].Value2 ?? 0;
+                bool isCapital = xlRange.Cells[i, 5].Value2 == 1 ? true : false;
+                double zona = xlRange.Cells[i, 6].Value2 ?? 0;
+                double secao = xlRange.Cells[i, 7].Value2 ?? 0;
+                double qtdAptos = xlRange.Cells[i, 8].Value2 ?? 0;
+                double qtdVotos13 = xlRange.Cells[i, 9].Value2 ?? 0;
+                double qtdVotos22 = xlRange.Cells[i, 10].Value2 ?? 0;
+                double qtdTotalVotos1322 = xlRange.Cells[i, 11].Value2 ?? 0;
+                double qtdVotosBranco = xlRange.Cells[i, 12].Value2 ?? 0;
+                double qtdTotalFinal = xlRange.Cells[i, 13].Value2 ?? 0;
 
                 Voto v = new()
                 {
                     Turno = 2,
+                    UF = UF,
                     NomeMunicipio = nomeMunicipio,
                     QtdAptosMunicipio = qtdAptosMunicipio,
                     CodigoMunicipioIBGE = codigoMunicipioIBGE,
@@ -89,7 +94,7 @@ namespace LeitorXLSX.Repositories
 
                 xlsxVotos.Add(v);
 
-                Console.WriteLine("Linha " + i + " adicionada na lista");
+                Console.WriteLine($"Linha {(i - desconsiderarAteLinha)}/{rows} adicionada à lista final");
             }
 
             // Etc;

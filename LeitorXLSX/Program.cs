@@ -24,7 +24,7 @@ var serviceProvider = new ServiceCollection()
                      .BuildServiceProvider();
 
 bool isContinuar = true;
-bool resetarBd = true;
+bool resetarBd = false;
 if (resetarBd)
 {
     try
@@ -50,17 +50,17 @@ if (isContinuar)
     List<Voto> xlsxVotos = await votos?.GetVotosSegundoTurno();
 
     Console.WriteLine($"\nResultado: {xlsxVotos?.Count}");
-    if (xlsxVotos is not null)
-    {
-        foreach (var item in xlsxVotos)
-        {
-            string? nomeMunicipio = item?.NomeMunicipio == "-" ? "N/A" : $"+{item?.NomeMunicipio}";
-            int? zona = item?.Zona == 0 ? 0 : item?.Zona;
-            int? secao = item?.Secao == 0 ? 0 : item?.Secao;
+    //if (xlsxVotos is not null)
+    //{
+    //    foreach (var item in xlsxVotos)
+    //    {
+    //        string? nomeMunicipio = item?.NomeMunicipio == "-" ? "N/A" : $"+{item?.NomeMunicipio}";
+    //        double? zona = item?.Zona == 0 ? 0 : item?.Zona;
+    //        double? secao = item?.Secao == 0 ? 0 : item?.Secao;
 
-            Console.WriteLine($"Cidade: {nomeMunicipio} | Zona: {zona} | Seção: {secao}");
-        }
-    }
+    //        Console.WriteLine($"Cidade: {nomeMunicipio} | Zona: {zona} | Seção: {secao}");
+    //    }
+    //}
 }
 
 Console.WriteLine("\nFim");
