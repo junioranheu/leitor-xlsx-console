@@ -23,24 +23,24 @@ namespace LeitorXLSX.Repositories
 
             if (caminhoXLSX is not null)
             {
-                List<Voto> dados = LerExcel(caminhoXLSX);
+                List<Voto> xlsxVotos = LerExcelSegundoTurno(caminhoXLSX);
 
-                if (dados?.Count > 0)
+                if (xlsxVotos?.Count > 0)
                 {
-                    await _context.AddRangeAsync(dados);
+                    await _context.AddRangeAsync(xlsxVotos);
                     // await _context.SaveChangesAsync();
                 }
 
-                return dados;
+                return xlsxVotos;
             }
 
             return null;
         }
 
-        private static List<Voto> LerExcel(string caminho)
+        private static List<Voto> LerExcelSegundoTurno(string caminho)
         {
             // Tutorial de como "ler excel" em C#: https://coderwall.com/p/app3ya/read-excel-file-in-c
-            List<Voto> listaValores = new();
+            List<Voto> xlsxVotos = new();
 
             // Criar referência do Excel;
             ExcelLeitorXLSX.Application xlApp = new();
@@ -62,7 +62,7 @@ namespace LeitorXLSX.Repositories
                     continue;
                 }
 
-                string orgao = xlRange?.Cells[i, 1].ToString() ?? "";
+                string teste = xlRange?.Cells[i, 1].ToString() ?? "";
                 //string grupo = (string)(xlRange.Cells[i, 2]).Value2;
                 //string diretoria = (string)(xlRange.Cells[i, 3]).Value2;
                 //string vereador = (string)(xlRange.Cells[i, 4]).Value2;
@@ -89,39 +89,24 @@ namespace LeitorXLSX.Repositories
                 //string usuarioCadastro = (string)(xlRange.Cells[i, 25]).Value2;
                 //string cpf = xlRange.Cells[i, 26].Value2.ToString();
 
-                ColunasExcel e = new ColunasExcel()
+                Voto v = new()
                 {
-                    ExcelId = i,
-                    Orgao = orgao,
-                    Grupo = grupo,
-                    Diretoria = diretoria,
-                    Vereador = vereador,
-                    TipoProtocolo = tipoProtocolo,
-                    Assunto = assunto,
-                    Subdivisao = subdivisao,
-                    Regional = regional,
-                    Numero = numero,
-                    Complemento = complemento,
-                    Cep = cep,
-                    PontoReferencia = RemoverCaracteresZoados(pontoReferencia),
-                    Descricao = descricao,
-                    DadosImportantes = RemoverCaracteresZoados(dadosImportantes),
-                    Status = status,
-                    TipoDocExterno = RemoverCaracteresZoados(tipoDocExterno),
-                    DocExterno = RemoverCaracteresZoados(docExterno),
-                    Posicionamento = posicionamento,
-                    DtResposta = RemoverCaracteresZoados(dtResposta),
-                    Resposta = RemoverCaracteresZoados(resposta),
-                    StatusRespostaParcial = RemoverCaracteresZoados(statusRespostaParcial),
-                    DtRespostaParcial = RemoverCaracteresZoados(dtRespostaParcial),
-                    RespostaParcial = RemoverCaracteresZoados(respostaParcial),
-                    Sigiloso = sigiloso,
-                    UsuarioCadastro = usuarioCadastro,
-                    Cpf = cpf
-
+                    Turno = 2,
+                    NomeMunicipio = "",
+                    QtdAptosMunicipio = "",
+                    CodigoMunicipioIBGE = "",
+                    IsCapital = false,
+                    Zona = 0,
+                    Secao = 0,
+                    QtdAptos = 0,
+                    QtdVotos13 = 0,
+                    QtdVotos22 = 0,
+                    QtdTotalVotos1322 = 0,
+                    QtdVotosBranco = 0,
+                    QtdTotalFinal = 0
                 };
 
-                listaValores.Add(e);
+                xlsxVotos.Add(v);
 
                 Console.WriteLine("Linha " + i + " adicionada na lista");
             }
@@ -139,7 +124,7 @@ namespace LeitorXLSX.Repositories
             #endregion
 
             // Finalizar método retornando lista;
-            return listaValores;
+            return xlsxVotos;
         }
     }
 }
