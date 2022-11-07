@@ -17,13 +17,13 @@ namespace LeitorXLSX.Repositories
             _context = context;
         }
 
-        public async Task<List<Voto>>? GetVotosSegundoTurno()
+        public async Task<IEnumerable<Voto>>? GetVotosSegundoTurno()
         {
             string caminhoXLSX = $"{AppContext.BaseDirectory}\\XLSX\\{GetDescricaoEnum(ListaXlsxEnum.SegundoTurno)}";
 
-            List<Voto> xlsxVotos = LerExcelSegundoTurno(caminho: caminhoXLSX, desconsiderarAteLinha: 2, isProcessoCompleto: true);
+            IEnumerable<Voto> xlsxVotos = LerExcelSegundoTurno(caminho: caminhoXLSX, desconsiderarAteLinha: 2, isProcessoCompleto: false);
 
-            if (xlsxVotos?.Count > 0)
+            if (xlsxVotos?.Count() > 0)
             {
                 await _context.AddRangeAsync(xlsxVotos);
                 await _context.SaveChangesAsync();
@@ -32,7 +32,7 @@ namespace LeitorXLSX.Repositories
             return xlsxVotos;
         }
 
-        private static List<Voto> LerExcelSegundoTurno(string caminho, int desconsiderarAteLinha, bool isProcessoCompleto)
+        private static IEnumerable<Voto> LerExcelSegundoTurno(string caminho, int desconsiderarAteLinha, bool isProcessoCompleto)
         {
             // Tutorial de como "ler excel" em C#: https://coderwall.com/p/app3ya/read-excel-file-in-c
             List<Voto> xlsxVotos = new();
@@ -49,7 +49,7 @@ namespace LeitorXLSX.Repositories
             Console.WriteLine("\nForam encontradas " + rowCount + " linhas no arquivo " + nomeArquivo + "\nAguarde um momento");
 
             // Verificar se o processo deve ser completo ou não;
-            int rows = isProcessoCompleto ? rowCount : 100; 
+            int rows = isProcessoCompleto ? rowCount : 10; 
             var votos = GerarVotosYield(xlRange: xlRange, rows: rows, desconsiderarAteLinha: desconsiderarAteLinha);
           
             // Adicionar dados na lista final;

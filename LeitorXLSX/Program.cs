@@ -47,9 +47,9 @@ if (isContinuar)
 {
     Console.WriteLine("\nIniciando leitura dos arquivos XLSXs");
     var votos = serviceProvider.GetService<IVotoInterface>();
-    List<Voto> xlsxVotos = await votos?.GetVotosSegundoTurno();
+    IEnumerable<Voto> xlsxVotos = await votos?.GetVotosSegundoTurno();
 
-    Console.WriteLine($"\nResultado: {xlsxVotos?.Count}");
+    Console.WriteLine($"\nResultado: {xlsxVotos?.Count()}");
     //if (xlsxVotos is not null)
     //{
     //    foreach (var item in xlsxVotos)

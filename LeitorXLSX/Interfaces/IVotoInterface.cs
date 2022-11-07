@@ -4,6 +4,6 @@ namespace LeitorXLSX.Interfaces
 {
     internal interface IVotoInterface
     {
-        Task<List<Voto>>? GetVotosSegundoTurno();
+        Task<IEnumerable<Voto>>? GetVotosSegundoTurno();
     }
 }
