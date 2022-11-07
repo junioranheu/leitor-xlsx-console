@@ -21,7 +21,7 @@ namespace LeitorXLSX.Repositories
         {
             string caminhoXLSX = $"{AppContext.BaseDirectory}\\XLSX\\{GetDescricaoEnum(ListaXlsxEnum.SegundoTurno)}";
 
-            IEnumerable<Voto> xlsxVotos = LerExcelSegundoTurno(caminho: caminhoXLSX, desconsiderarAteLinha: 2, isProcessoCompleto: false);
+            IEnumerable<Voto> xlsxVotos = await LerExcelSegundoTurno(caminho: caminhoXLSX, desconsiderarAteLinha: 2, isProcessoCompleto: true);
 
             if (xlsxVotos?.Count() > 0)
             {
@@ -32,43 +32,46 @@ namespace LeitorXLSX.Repositories
             return xlsxVotos;
         }
 
-        private static IEnumerable<Voto> LerExcelSegundoTurno(string caminho, int desconsiderarAteLinha, bool isProcessoCompleto)
+        private async Task<IEnumerable<Voto>> LerExcelSegundoTurno(string caminho, int desconsiderarAteLinha, bool isProcessoCompleto)
         {
-            // Tutorial de como "ler excel" em C#: https://coderwall.com/p/app3ya/read-excel-file-in-c
-            List<Voto> xlsxVotos = new();
+            return await Task.Run(() =>
+            {
+                // Tutorial de como "ler excel" em C#: https://coderwall.com/p/app3ya/read-excel-file-in-c
+                List<Voto> xlsxVotos = new();
 
-            // Criar referência do Excel;
-            ExcelLeitorXLSX.Application xlApp = new();
-            ExcelLeitorXLSX.Workbook xlWorkbook = xlApp.Workbooks.Open(caminho);
-            ExcelLeitorXLSX._Worksheet xlWorksheet = (ExcelLeitorXLSX._Worksheet)xlWorkbook.Sheets[1];
-            ExcelLeitorXLSX.Range xlRange = xlWorksheet.UsedRange;
-            int rowCount = xlRange.Rows.Count;
-            int colCount = xlRange.Columns.Count;
+                // Criar referência do Excel;
+                ExcelLeitorXLSX.Application xlApp = new();
+                ExcelLeitorXLSX.Workbook xlWorkbook = xlApp.Workbooks.Open(caminho);
+                ExcelLeitorXLSX._Worksheet xlWorksheet = (ExcelLeitorXLSX._Worksheet)xlWorkbook.Sheets[1];
+                ExcelLeitorXLSX.Range xlRange = xlWorksheet.UsedRange;
+                int rowCount = xlRange.Rows.Count;
+                int colCount = xlRange.Columns.Count;
 
-            string nomeArquivo = Path.GetFileName(caminho);
-            Console.WriteLine("\nForam encontradas " + rowCount + " linhas no arquivo " + nomeArquivo + "\nAguarde um momento");
+                string nomeArquivo = Path.GetFileName(caminho);
+                Console.WriteLine($"\nForam encontradas {rowCount} linhas no arquivo {nomeArquivo}\nAguarde um momento");
 
-            // Verificar se o processo deve ser completo ou não;
-            int rows = isProcessoCompleto ? rowCount : 10; 
-            var votos = GerarVotosYield(xlRange: xlRange, rows: rows, desconsiderarAteLinha: desconsiderarAteLinha);
-          
-            // Adicionar dados na lista final;
-            xlsxVotos.AddRange(votos);
+                // Verificar se o processo deve ser completo ou não;
+                int rows = isProcessoCompleto ? rowCount : 10;
+                var votos = GerarVotosYield(xlRange: xlRange, rows: rows, desconsiderarAteLinha: desconsiderarAteLinha);
 
-            // Etc;
-            #region ETC
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            Marshal.ReleaseComObject(xlRange);
-            Marshal.ReleaseComObject(xlWorksheet);
-            xlWorkbook.Close();
-            Marshal.ReleaseComObject(xlWorkbook);
-            xlApp.Quit();
-            Marshal.ReleaseComObject(xlApp);
-            #endregion
+                // Adicionar dados na lista final;
+                xlsxVotos.AddRange(votos);
 
-            // Finalizar método retornando lista;
-            return xlsxVotos;
+                // Outros;
+                #region ETC
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                Marshal.ReleaseComObject(xlRange);
+                Marshal.ReleaseComObject(xlWorksheet);
+                xlWorkbook.Close();
+                Marshal.ReleaseComObject(xlWorkbook);
+                xlApp.Quit();
+                Marshal.ReleaseComObject(xlApp);
+                #endregion
+
+                // Finalizar método retornando lista;
+                return xlsxVotos;
+            });
         }
 
         private static IEnumerable<Voto> GerarVotosYield(ExcelLeitorXLSX.Range xlRange, int rows, int desconsiderarAteLinha)
