@@ -49,8 +49,30 @@ namespace LeitorXLSX.Repositories
             Console.WriteLine("\nForam encontradas " + rowCount + " linhas no arquivo " + nomeArquivo + "\nAguarde um momento");
 
             // Verificar se o processo deve ser completo ou não;
-            int rows = isProcessoCompleto ? rowCount : 100;
+            int rows = isProcessoCompleto ? rowCount : 100; 
+            var votos = GerarVotosYield(xlRange: xlRange, rows: rows, desconsiderarAteLinha: desconsiderarAteLinha);
+          
+            // Adicionar dados na lista final;
+            xlsxVotos.AddRange(votos);
 
+            // Etc;
+            #region ETC
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            Marshal.ReleaseComObject(xlRange);
+            Marshal.ReleaseComObject(xlWorksheet);
+            xlWorkbook.Close();
+            Marshal.ReleaseComObject(xlWorkbook);
+            xlApp.Quit();
+            Marshal.ReleaseComObject(xlApp);
+            #endregion
+
+            // Finalizar método retornando lista;
+            return xlsxVotos;
+        }
+
+        private static IEnumerable<Voto> GerarVotosYield(ExcelLeitorXLSX.Range xlRange, int rows, int desconsiderarAteLinha)
+        {
             // Loop em todas as linhas;
             for (int i = 1; i <= (rows + desconsiderarAteLinha); i++)
             {
@@ -92,25 +114,10 @@ namespace LeitorXLSX.Repositories
                     QtdTotalFinal = qtdTotalFinal
                 };
 
-                xlsxVotos.Add(v);
-
                 Console.WriteLine($"Linha {(i - desconsiderarAteLinha)}/{rows} adicionada à lista final");
+
+                yield return v;
             }
-
-            // Etc;
-            #region ETC
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            Marshal.ReleaseComObject(xlRange);
-            Marshal.ReleaseComObject(xlWorksheet);
-            xlWorkbook.Close();
-            Marshal.ReleaseComObject(xlWorkbook);
-            xlApp.Quit();
-            Marshal.ReleaseComObject(xlApp);
-            #endregion
-
-            // Finalizar método retornando lista;
-            return xlsxVotos;
         }
     }
 }
